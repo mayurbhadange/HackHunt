@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Hackathons</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 20px;
+            background-color: #f4f4f4;
+            color: #333;
+        }
+
+        h1 {
+            text-align: center;
+            color: #007bff;
+        }
+
+        #hackathon-list {
+            list-style: none;
+            padding: 0;
+        }
+
+        #hackathon-list li {
+            background-color: #fff;
+            border: 1px solid #ddd;
+            margin-bottom: 10px;
+            padding: 10px;
+            border-radius: 5px;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+        }
+
+        #hackathon-list li a {
+            color: #007bff;
+            text-decoration: none;
+        }
+
+        #hackathon-list li a:hover {
+            text-decoration: underline;
+        }
+    </style>
+</head>
+<body>
+    <h1>Hackathons</h1>
+    <ul id="hackathon-list">
+    </ul>
+    <script>
+        fetch('http://localhost:8000/hackathons')
+            .then(response => response.json())
+            .then(hackathons => {
+                const hackathonList = document.getElementById('hackathon-list');
+                hackathons.forEach(hackathon => {
+                    const listItem = document.createElement('li');
+                    listItem.innerHTML = `
+                        <strong>${hackathon.title}</strong><br>
+                        Organiser: ${hackathon.organiser}<br>
+                        <a href="${hackathon.link}" target="_blank">Link</a>
+                    `;
+                    hackathonList.appendChild(listItem);
+                });
+            })
+            .catch(error => console.error('Error fetching hackathons:', error));
+    </script>
+</body>
+</html>

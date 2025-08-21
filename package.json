@@ -1,0 +1,22 @@
+{
+  "name": "hackScrap",
+  "version": "1.0.0",
+  "description": "A hackathon scraper",
+  "type": "module",
+  "main": "index.js",
+  "scripts": {
+    "start": "node index.js"
+  },
+  "dependencies": {
+    "axios": "^1.6.2",
+    "cheerio": "^1.0.0-rc.12",
+    "dotenv": "^16.3.1",
+    "express": "^4.18.2",
+    "mongoose": "^6.12.6",
+    "node-cron": "^3.0.2",
+    "puppeteer": "^21.0.3"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC"
+}
