@@ -20,6 +20,32 @@ dotenv.config();
 const app = express();
 app.use(express.json());
 
+const connectDB = async () => {
+  try {
+    await mongoose.connect(process.env.MONGO_DB_URI, {
+      useNewUrlParser: true,
+      useUnifiedTopology: true,
+    });
+    console.log('MongoDB connected successfully');
+  } catch (error) {
+    console.error('MongoDB connection error:', error);
+    process.exit(1);
+  }
+};
+
+await connectDB();
+
+// Wait for connection to be ready
+await new Promise((resolve) => {
+  if (mongoose.connection.readyState === 1) {
+    resolve();
+  } else {
+    mongoose.connection.once('open', resolve);
+  }
+});
+
+console.log('Database connection established, starting operations...');
+
 mongoose.connect(process.env.MONGO_DB_URI, {
   useNewUrlParser: true,
   useUnifiedTopology: true,
@@ -608,18 +634,16 @@ cron.schedule("0 */6 * * *", async () => {
 });
 
 await main();
-// // await fetchMLH()
-// console.log("Scrapping Done!");
-// const oldupdate = await Update.findOne();
-// console.log(oldupdate);
-// // const newupdate = Update.create({ lastUpdated: new Date(), version: 1 });
-// await Update.findByIdAndUpdate(
-//   oldupdate._id,
-//   { lastUpdate: Date.now(), version: oldupdate.version + 1 },
-//   { upsert: true }
-// );
-// await removeduplicatesbytitle();
-// await removeduplicatesbylink();
+console.log("Scrapping Done!");
+const oldupdate = await Update.findOne();
+console.log(oldupdate);
+await Update.findByIdAndUpdate(
+  oldupdate._id,
+  { lastUpdate: Date.now(), version: oldupdate.version + 1 },
+  { upsert: true }
+);
+await removeduplicatesbytitle();
+await removeduplicatesbylink();
 
 app.get("/", (req, res) => {
   res.sendFile(path.join(__dirname, 'index.html'));
