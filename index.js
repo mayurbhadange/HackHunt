@@ -505,7 +505,7 @@ async function main() {
       { name: 'Devpost', fn: fetchDevpost },
       { name: 'Hackskill', fn: fetchHackskill },
       { name: 'Unstop', fn: fetchUnstop },
-      { name: 'MLH', fn: fetchMLH }
+      ...(process.env.ENABLE_MLH === 'true' ? [{ name: 'MLH', fn: fetchMLH }] : [])
       // { name: 'LabAI', fn: fetchLabAi }
     ];
 
