@@ -11,11 +11,6 @@ Create a `.env` file with:
 ```
 MONGO_DB_URI=mongodb+srv://<user>:<pass>@<cluster>/<db>?retryWrites=true&w=majority
 PORT=8000
-<<<<<<< HEAD
-# Optional: enable Puppeteer-based MLH scraper (disabled by default for low memory)
-ENABLE_MLH=false
-=======
->>>>>>> origin/cursor/understand-project-structure-5b29
 ```
 
 ## Run locally
@@ -56,16 +51,13 @@ docker run -p 8000:8000 \
 - Vercel (serverless) note: This app maintains a long-running server and uses Puppeteer + cron. Prefer a containerized deployment (Vercel Functions are not suitable for cron and headless Chrome). If using Vercel, deploy as a Docker container.
 
 ## 512MB Render instance guidance
-- Keep `ENABLE_MLH=false` (default). MLH uses Puppeteer and may exceed 512MB.
 - The remaining scrapers (Devfolio, Devpost, Hack2Skill, Unstop) are HTTP/HTML-only and memory-light.
-- If you must run MLH, try enabling it only at off-peak times or upgrade the instance.
 =======
 - Render/Railway/Fly.io: Use the Docker image or build from repo. Set env vars `MONGO_DB_URI`. Do not set `PORT` on Render; it is provided. Healthcheck can hit `/hackathons`.
 - Vercel (serverless) note: This app maintains a long-running server and uses cron. Prefer a containerized deployment.
 
 ## 512MB Render instance guidance
 - This configuration avoids headless browser scraping; it runs comfortably on 512MB.
->>>>>>> origin/cursor/understand-project-structure-5b29
 
 ## Dev
 - Hot reload: `npm run dev`
