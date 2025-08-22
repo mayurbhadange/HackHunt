@@ -4,7 +4,7 @@ import cron from "node-cron";
 import { devfolio } from "./scrapers/devfolio.js";
 import { hackskill } from "./scrapers/hackskill.js";
 import { labai } from "./scrapers/labai.js";
-import { mlh } from "./scrapers/mlh.js";
+// import { mlh } from "./scrapers/mlh.js";
 import { Unstop } from "./scrapers/unstop.js";
 import { devpost } from "./scrapers/devpost.js";
 import dotenv from "dotenv";
@@ -357,77 +357,6 @@ async function fetchLabAi() {
 
 // fetchLabAi();
 
-async function fetchMLH() {
-  try {
-    const hackathons = await mlh();
-    // hackathons.forEach((hackathon) => {
-    //   const newHackathon = new Hackathon({
-    //     title: hackathon.name,
-    //     theme: ["Unspecified"],
-    //     startDate: new Date(hackathon.startDate),
-    //     stringDate: hackathon.startDate,
-    //     status: "Upcoming",
-    //     mode:
-    //       hackathon.location == "Everywhere, Online" ||
-    //       hackathon.location == "Everywhere, Worldwide"
-    //         ? "Online"
-    //         : "Offline",
-    //     location: hackathon.location,
-    //     link: hackathon.url,
-    //     participants: 0,
-    //     organiser: "MLH",
-    //     website: "MLH",
-    //   });
-    //   newHackathon.save();
-    //   //   console.log({
-    //   //     title: hackathon.name,
-    //   //     theme: ["Unspecified"],
-    //   //     startDate: new Date(hackathon.startDate),
-    //   //     stringDate: hackathon.startDate,
-    //   //     status: "Upcoming",
-    //   //     mode: (hackathon.location == "Everywhere, Online" || hackathon.location == "Everywhere, Worldwide") ? "Online" : "Offline",
-    //   //     location: hackathon.location,
-    //   //     link: hackathon.url,
-    //   //     participants: 0,
-    //   //     organiser: "MLH",
-    //   //     website: "MLH",
-    //   //   });
-    // });
-    hackathons.forEach(async (hackathon) => {
-      await Hackathon.updateOne(
-        {
-          title: hackathon.name,
-          link: hackathon.link,
-        }, // Unique filter criteria
-        {
-          $setOnInsert: {
-            theme: ["Unspecified"],
-            stringDate: hackathon.startDate,
-            status: "Upcoming",
-            mode:
-              hackathon.location == "Everywhere, Online" ||
-              hackathon.location == "Everywhere, Worldwide"
-                ? "Online"
-                : "Offline",
-            location: hackathon.location,
-            link: hackathon.url,
-            participants: 0,
-            organiser: "MLH",
-            website: "MLH",
-          },
-        },
-        { upsert: true } // Insert if not already exists
-      );
-    });
-
-    // console.log(hackathons); // Use the hackathons data as needed
-  } catch (error) {
-    console.error("Error fetching hackathons:", error);
-  }
-}
-
-// fetchMLH();
-
 async function fetchUnstop() {
   try {
     const hackathons = await Unstop();
@@ -504,8 +433,7 @@ async function main() {
       { name: 'Devfolio', fn: fetchDevfolio },
       { name: 'Devpost', fn: fetchDevpost },
       { name: 'Hackskill', fn: fetchHackskill },
-      { name: 'Unstop', fn: fetchUnstop },
-      ...(process.env.ENABLE_MLH === 'true' ? [{ name: 'MLH', fn: fetchMLH }] : [])
+      { name: 'Unstop', fn: fetchUnstop }
       // { name: 'LabAI', fn: fetchLabAi }
     ];
 
