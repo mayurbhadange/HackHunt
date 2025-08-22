@@ -344,7 +344,7 @@ async function fetchLabAi() {
             status: "Upcoming",
             mode: "Online",
             location: "Online",
-            link: "https://lablab.ai",
+            link: hackathon.link,
             participants: hackathon._count.participants,
             organiser: "LabAI",
             website: "LabAI",
@@ -494,19 +494,23 @@ async function main() {
 // );
 
 const removeduplicatesbytitle = async () => {
+  console.log("[dedupe:title] starting...");
+  const preCount = await Hackathon.estimatedDocumentCount();
   const duplicates = await Hackathon.aggregate([
-    // Group by the field you want to check for duplicates
+    {
+      $match: {
+        title: { $ne: null },
+      },
+    },
     {
       $group: {
         _id: {
           title: "$title",
-          // link: "$link",
-        }, // Group by the specified field
-        count: { $sum: 1 }, // Count occurrences
-        docs: { $push: "$_id" }, // Keep track of document IDs
+        },
+        count: { $sum: 1 },
+        docs: { $push: "$_id" },
       },
     },
-    // Only keep groups that have more than one document
     {
       $match: {
         count: { $gt: 1 },
@@ -514,32 +518,35 @@ const removeduplicatesbytitle = async () => {
     },
   ]);
 
-  // 2. Remove duplicates while keeping one copy
+  let removed = 0;
   for (const duplicate of duplicates) {
-    // Get all document IDs except the first one (which we'll keep)
     const duplicateIds = duplicate.docs.slice(1);
-
-    // Delete all duplicates
-    await Hackathon.deleteMany({
-      _id: { $in: duplicateIds },
-    });
+    if (duplicateIds.length === 0) continue;
+    const res = await Hackathon.deleteMany({ _id: { $in: duplicateIds } });
+    removed += res.deletedCount || 0;
   }
+  const postCount = await Hackathon.estimatedDocumentCount();
+  console.log(`[dedupe:title] done. removed=${removed} before=${preCount} after=${postCount}`);
 };
 
 const removeduplicatesbylink = async () => {
+  console.log("[dedupe:link] starting...");
+  const preCount = await Hackathon.estimatedDocumentCount();
   const duplicates = await Hackathon.aggregate([
-    // Group by the field you want to check for duplicates
+    {
+      $match: {
+        link: { $ne: null, $ne: "" },
+      },
+    },
     {
       $group: {
         _id: {
-          // title: "$title",
           link: "$link",
-        }, // Group by the specified field
-        count: { $sum: 1 }, // Count occurrences
-        docs: { $push: "$_id" }, // Keep track of document IDs
+        },
+        count: { $sum: 1 },
+        docs: { $push: "$_id" },
       },
     },
-    // Only keep groups that have more than one document
     {
       $match: {
         count: { $gt: 1 },
@@ -547,16 +554,15 @@ const removeduplicatesbylink = async () => {
     },
   ]);
 
-  // 2. Remove duplicates while keeping one copy
+  let removed = 0;
   for (const duplicate of duplicates) {
-    // Get all document IDs except the first one (which we'll keep)
     const duplicateIds = duplicate.docs.slice(1);
-
-    // Delete all duplicates
-    await Hackathon.deleteMany({
-      _id: { $in: duplicateIds },
-    });
+    if (duplicateIds.length === 0) continue;
+    const res = await Hackathon.deleteMany({ _id: { $in: duplicateIds } });
+    removed += res.deletedCount || 0;
   }
+  const postCount = await Hackathon.estimatedDocumentCount();
+  console.log(`[dedupe:link] done. removed=${removed} before=${preCount} after=${postCount}`);
 };
 
 // const keepAlive = () => {
@@ -587,14 +593,12 @@ cron.schedule("0 */6 * * *", async () => {
   console.log("Scrapping Done!");
   const oldupdate = await Update.findOne();
   console.log(oldupdate);
-  // const newupdate = Update.create({ lastUpdated: new Date(), version: 1 });
   await Update.findByIdAndUpdate(
     oldupdate._id,
     { lastUpdate: Date.now(), version: oldupdate.version + 1 },
     { upsert: true }
   );
-  await removeduplicatesbytitle();
-  await removeduplicatesbylink();
+  // Dedupe already handled inside main()
 });
 
 await main();
