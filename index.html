@@ -64,7 +64,7 @@
 </html> -->
 
 <!-- v2 -->
-<!DOCTYPE html>
+<!-- <!DOCTYPE html>
 <html>
 <head>
     <title>HackHunt</title>
@@ -574,6 +574,862 @@
                     </div>
                 `;
             });
+
+        // Initialize particles
+        createParticles();
+    </script>
+</body>
+</html> -->
+
+<!-- v3 -->
+ <!-- <!DOCTYPE html>
+<html>
+<head>
+    <title>Hackathons</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 20px;
+            background-color: #f4f4f4;
+            color: #333;
+        }
+
+        h1 {
+            text-align: center;
+            color: #007bff;
+        }
+
+        #hackathon-list {
+            list-style: none;
+            padding: 0;
+        }
+
+        #hackathon-list li {
+            background-color: #fff;
+            border: 1px solid #ddd;
+            margin-bottom: 10px;
+            padding: 10px;
+            border-radius: 5px;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+        }
+
+        #hackathon-list li a {
+            color: #007bff;
+            text-decoration: none;
+        }
+
+        #hackathon-list li a:hover {
+            text-decoration: underline;
+        }
+    </style>
+</head>
+<body>
+    <h1>Hackathons</h1>
+    <ul id="hackathon-list">
+    </ul>
+    <script>
+        fetch('http://localhost:8000/hackathons')
+            .then(response => response.json())
+            .then(hackathons => {
+                const hackathonList = document.getElementById('hackathon-list');
+                hackathons.forEach(hackathon => {
+                    const listItem = document.createElement('li');
+                    listItem.innerHTML = `
+                        <strong>${hackathon.title}</strong><br>
+                        Organiser: ${hackathon.organiser}<br>
+                        <a href="${hackathon.link}" target="_blank">Link</a>
+                    `;
+                    hackathonList.appendChild(listItem);
+                });
+            })
+            .catch(error => console.error('Error fetching hackathons:', error));
+    </script>
+</body>
+</html> -->
+
+<!-- v2 -->
+<!DOCTYPE html>
+<html>
+<head>
+    <title>HackHunt</title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;600;700&family=Inter:wght@400;500;600;700&display=swap');
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            background: linear-gradient(135deg, #0a0a0a 0%, #1a1a2e 50%, #16213e 100%);
+            color: #e0e6ed;
+            min-height: 100vh;
+            overflow-x: hidden;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 2rem;
+        }
+
+        .top-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 2rem;
+            padding: 1rem 0;
+            border-bottom: 1px solid rgba(124, 58, 237, 0.3);
+        }
+
+        .logo {
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 1.8rem;
+            font-weight: 700;
+            background: linear-gradient(135deg, #00d4ff 0%, #7c3aed 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        .social-links {
+            display: flex;
+            gap: 1rem;
+        }
+
+        .social-links a {
+            color: #8892b0;
+            font-size: 1.2rem;
+            transition: color 0.3s ease;
+            text-decoration: none;
+        }
+
+        .social-links a:hover {
+            color: #00d4ff;
+        }
+
+        .controls-section {
+            display: grid;
+            grid-template-columns: 2fr 1fr 1fr;
+            gap: 1rem;
+            margin-bottom: 2rem;
+            align-items: center;
+        }
+
+        .search-container {
+            position: relative;
+        }
+
+        .search-bar {
+            width: 100%;
+            padding: 0.75rem 1rem 0.75rem 2.5rem;
+            background: rgba(26, 26, 46, 0.8);
+            border: 1px solid #2d3748;
+            border-radius: 8px;
+            color: #e0e6ed;
+            font-size: 1rem;
+            transition: border-color 0.3s ease;
+        }
+
+        .search-bar:focus {
+            outline: none;
+            border-color: #00d4ff;
+            box-shadow: 0 0 0 2px rgba(0, 212, 255, 0.2);
+        }
+
+        .search-bar::placeholder {
+            color: #8892b0;
+        }
+
+        .search-icon {
+            position: absolute;
+            left: 0.75rem;
+            top: 50%;
+            transform: translateY(-50%);
+            color: #8892b0;
+            pointer-events: none;
+        }
+
+        .filter-group {
+            display: flex;
+            flex-direction: column;
+            gap: 0.5rem;
+        }
+
+        .filter-label {
+            font-size: 0.9rem;
+            color: #8892b0;
+            font-weight: 500;
+        }
+
+        .filter-select {
+            padding: 0.75rem;
+            background: rgba(26, 26, 46, 0.8);
+            border: 1px solid #2d3748;
+            border-radius: 8px;
+            color: #e0e6ed;
+            font-size: 0.9rem;
+            cursor: pointer;
+            transition: border-color 0.3s ease;
+        }
+
+        .filter-select:focus {
+            outline: none;
+            border-color: #7c3aed;
+            box-shadow: 0 0 0 2px rgba(124, 58, 237, 0.2);
+        }
+
+        .filter-select option {
+            background: #1a1a2e;
+            color: #e0e6ed;
+        }
+
+        .stats-section {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 2rem;
+            padding: 1rem;
+            background: rgba(26, 26, 46, 0.5);
+            border-radius: 8px;
+            border: 1px solid rgba(124, 58, 237, 0.3);
+        }
+
+        .hackathon-count {
+            font-family: 'JetBrains Mono', monospace;
+            color: #00d4ff;
+            font-weight: 600;
+        }
+
+        .clear-filters {
+            background: linear-gradient(135deg, #ff006e, #7c3aed);
+            color: white;
+            border: none;
+            padding: 0.5rem 1rem;
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 0.9rem;
+            transition: transform 0.2s ease;
+        }
+
+        .clear-filters:hover {
+            transform: translateY(-2px);
+        }
+
+        .header {
+            text-align: center;
+            margin-bottom: 3rem;
+            position: relative;
+        }
+
+        .header::before {
+            content: '';
+            position: absolute;
+            top: -20px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 100px;
+            height: 4px;
+            background: linear-gradient(90deg, #00d4ff, #7c3aed, #ff006e);
+            border-radius: 2px;
+            animation: glow 2s ease-in-out infinite alternate;
+        }
+
+        @keyframes glow {
+            from { box-shadow: 0 0 10px #00d4ff; }
+            to { box-shadow: 0 0 20px #7c3aed, 0 0 30px #ff006e; }
+        }
+
+        h1 {
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 3.5rem;
+            font-weight: 700;
+            background: linear-gradient(135deg, #00d4ff 0%, #7c3aed 50%, #ff006e 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            margin-bottom: 0.5rem;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+        }
+
+        .subtitle {
+            font-size: 1.2rem;
+            color: #8892b0;
+            font-weight: 400;
+        }
+
+        .loading {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 200px;
+            font-family: 'JetBrains Mono', monospace;
+            color: #00d4ff;
+        }
+
+        .spinner {
+            width: 40px;
+            height: 40px;
+            border: 3px solid #1a1a2e;
+            border-top: 3px solid #00d4ff;
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+            margin-right: 1rem;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        #hackathon-list {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 20px;
+            list-style: none;
+            padding: 0;
+            margin: 0;
+        }
+
+        .hackathon-card {
+            background: rgba(26, 26, 46, 0.8);
+            border: 1px solid #2d3748;
+            border-radius: 12px;
+            padding: 20px;
+            position: relative;
+            overflow: hidden;
+            transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+            backdrop-filter: blur(10px);
+            display: flex;
+            flex-direction: column;
+            height: 100%;
+            min-height: 350px;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+        }
+
+        .hackathon-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: linear-gradient(135deg, transparent 0%, rgba(0, 212, 255, 0.1) 50%, transparent 100%);
+            opacity: 0;
+            transition: opacity 0.4s ease;
+            pointer-events: none;
+        }
+
+        .hackathon-card::after {
+            content: '';
+            position: absolute;
+            top: -2px;
+            left: -2px;
+            right: -2px;
+            bottom: -2px;
+            background: linear-gradient(45deg, #00d4ff, #7c3aed, #ff006e, #00d4ff);
+            border-radius: 18px;
+            opacity: 0;
+            z-index: -1;
+            transition: opacity 0.4s ease;
+            animation: borderRotate 3s linear infinite;
+        }
+
+        @keyframes borderRotate {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        .hackathon-card:hover {
+            transform: translateY(-8px) scale(1.02);
+            box-shadow: 0 20px 40px rgba(0, 212, 255, 0.2);
+        }
+
+        .hackathon-card:hover::before {
+            opacity: 1;
+        }
+
+        .hackathon-card:hover::after {
+            opacity: 1;
+        }
+
+        .card-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            margin-bottom: 16px;
+            flex-shrink: 0;
+        }
+
+        .hackathon-title {
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 1.2rem;
+            font-weight: 600;
+            color: #ffffff;
+            margin-bottom: 8px;
+            line-height: 1.3;
+        }
+
+        .platform-badge {
+            background: linear-gradient(135deg, #00d4ff, #7c3aed);
+            color: #ffffff;
+            padding: 0.3rem 0.8rem;
+            border-radius: 20px;
+            font-size: 0.8rem;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .card-content {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            margin-bottom: 16px;
+        }
+
+        .organiser {
+            color: #8892b0;
+            font-size: 1rem;
+            margin-bottom: 12px;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .organiser i {
+            color: #00d4ff;
+        }
+
+        .card-meta {
+            display: flex;
+            gap: 1rem;
+            margin-bottom: 16px;
+            flex-wrap: wrap;
+            margin-top: auto;
+        }
+
+        .meta-item {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            color: #8892b0;
+            font-size: 0.9rem;
+        }
+
+        .meta-item i {
+            color: #7c3aed;
+            width: 16px;
+        }
+
+        .cta-button {
+            background: linear-gradient(135deg, #00d4ff 0%, #7c3aed 100%);
+            color: #ffffff;
+            text-decoration: none;
+            padding: 12px 24px;
+            border-radius: 8px;
+            font-weight: 600;
+            font-size: 0.95rem;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 0.5rem;
+            transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden;
+            margin-top: auto;
+            flex-shrink: 0;
+            text-align: center;
+        }
+
+        .cta-button::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
+            transition: left 0.5s ease;
+        }
+
+        .cta-button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 25px rgba(0, 212, 255, 0.3);
+        }
+
+        .cta-button:hover::before {
+            left: 100%;
+        }
+
+        .error-message {
+            text-align: center;
+            color: #ff006e;
+            font-family: 'JetBrains Mono', monospace;
+            padding: 2rem;
+            background: rgba(255, 0, 110, 0.1);
+            border: 1px solid rgba(255, 0, 110, 0.3);
+            border-radius: 8px;
+            margin: 2rem 0;
+        }
+
+        @media (max-width: 768px) {
+            .top-header {
+                flex-direction: column;
+                gap: 1rem;
+                text-align: center;
+            }
+
+            .controls-section {
+                grid-template-columns: 1fr;
+                gap: 1rem;
+            }
+
+            .stats-section {
+                flex-direction: column;
+                gap: 1rem;
+                text-align: center;
+            }
+
+            #hackathon-list {
+                grid-template-columns: repeat(2, 1fr);
+                gap: 16px;
+            }
+            
+            .container {
+                padding: 1rem;
+            }
+
+            h1 {
+                font-size: 2.5rem;
+            }
+
+            .hackathon-card {
+                padding: 16px;
+                min-height: 320px;
+            }
+
+            .card-header {
+                flex-direction: column;
+                gap: 12px;
+            }
+
+            .card-meta {
+                flex-direction: column;
+                gap: 8px;
+            }
+        }
+
+        @media (max-width: 480px) {
+            #hackathon-list {
+                grid-template-columns: 1fr;
+                gap: 16px;
+            }
+            
+            .hackathon-card {
+                min-height: 300px;
+            }
+        }
+
+        .particles {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            z-index: -1;
+        }
+
+        .particle {
+            position: absolute;
+            width: 2px;
+            height: 2px;
+            background: #00d4ff;
+            border-radius: 50%;
+            animation: float 6s ease-in-out infinite;
+        }
+
+        @keyframes float {
+            0%, 100% { transform: translateY(0px) rotate(0deg); opacity: 0; }
+            50% { transform: translateY(-100px) rotate(180deg); opacity: 1; }
+        }
+    </style>
+</head>
+<body>
+    <div class="particles" id="particles"></div>
+    
+    <div class="container ">
+        <div class="top-header">
+            <div class="logo">HackHunt</div>
+            <div class="social-links">
+                <a href="https://github.com/mayurbhadange" target="_blank" title="GitHub">
+                    <i class="fab fa-github"></i>
+                </a>
+                <a href="https://www.linkedin.com/in/mayur-bhadange-392a82249/" target="_blank" title="LinkedIn">
+                    <i class="fab fa-linkedin"></i>
+                </a>
+                <a href="https://x.com/mayurbhadange10" target="_blank" title="Twitter">
+                    <i class="fab fa-twitter"></i>
+                </a>
+            </div>
+        </div>
+
+        <div class="controls-section">
+            <div class="search-container">
+                <i class="fas fa-search search-icon"></i>
+                <input type="text" class="search-bar" id="searchBar" placeholder="Search hackathons...">
+            </div>
+            
+            <div class="filter-group">
+                <label class="filter-label">Status</label>
+                <select class="filter-select" id="statusFilter">
+                    <option value="">All Status</option>
+                    <option value="upcoming">Upcoming</option>
+                    <option value="open">Open</option>
+                    <option value="live">Live</option>
+                </select>
+            </div>
+            
+            <div class="filter-group">
+                <label class="filter-label">Platform</label>
+                <select class="filter-select" id="platformFilter">
+                    <option value="">All Platforms</option>
+                    <option value="devfolio">Devfolio</option>
+                    <option value="devpost">Devpost</option>
+                    <option value="hack2skill">Hack2skill</option>
+                    <option value="unstop">Unstop</option>
+                    <option value="mlh">MLH</option>
+                    <option value="labai">LabAI</option>
+                </select>
+            </div>
+        </div>
+
+        <div class="stats-section">
+            <div class="hackathon-count" id="hackathonCount">
+                Loading hackathons...
+            </div>
+            <button class="clear-filters" id="clearFilters">
+                <i class="fas fa-times"></i> Clear Filters
+            </button>
+        </div>
+
+        <div class="header">
+            <h1>Hackhunt</h1>
+            <p class="subtitle">Discover the latest hackathons and coding competitions</p>
+        </div>
+        
+        <div class="loading" id="loading">
+            <div class="spinner"></div>
+            <span>Loading hackathons...</span>
+        </div>
+        
+        <ul id="hackathon-list"></ul>
+    </div>
+
+    <script>
+        // Create floating particles
+        function createParticles() {
+            const particlesContainer = document.getElementById('particles');
+            const particleCount = 50;
+            
+            for (let i = 0; i < particleCount; i++) {
+                const particle = document.createElement('div');
+                particle.className = 'particle';
+                particle.style.left = Math.random() * 100 + '%';
+                particle.style.animationDelay = Math.random() * 6 + 's';
+                particle.style.animationDuration = (Math.random() * 3 + 3) + 's';
+                particlesContainer.appendChild(particle);
+            }
+        }
+
+        // Platform icons mapping
+        const platformIcons = {
+            'Devfolio': 'fas fa-code',
+            'Devpost': 'fas fa-laptop-code',
+            'Hack2skill': 'fas fa-brain',
+            'Unstop': 'fas fa-rocket',
+            'MLH': 'fas fa-users',
+            'LabAI': 'fas fa-robot',
+            'default': 'fas fa-terminal'
+        };
+
+        // Mode icons mapping
+        const modeIcons = {
+            'Online': 'fas fa-globe',
+            'Offline': 'fas fa-map-marker-alt',
+            'Hybrid': 'fas fa-sync-alt'
+        };
+
+        function formatDate(dateString) {
+            if (!dateString) return 'TBA';
+            const date = new Date(dateString);
+            return date.toLocaleDateString('en-US', { 
+                month: 'short', 
+                day: 'numeric',
+                year: 'numeric'
+            });
+        }
+
+        function getPlatformIcon(website) {
+            return platformIcons[website] || platformIcons.default;
+        }
+
+        function getModeIcon(mode) {
+            return modeIcons[mode] || modeIcons.Online;
+        }
+
+        // Global variables for filtering
+        let allHackathons = [];
+        let filteredHackathons = [];
+
+        function updateHackathonCount() {
+            const countElement = document.getElementById('hackathonCount');
+            countElement.textContent = `${filteredHackathons.length} hackathons found`;
+        }
+
+        function filterHackathons() {
+            const searchTerm = document.getElementById('searchBar').value.toLowerCase();
+            const statusFilter = document.getElementById('statusFilter').value.toLowerCase();
+            const platformFilter = document.getElementById('platformFilter').value.toLowerCase();
+
+            filteredHackathons = allHackathons.filter(hackathon => {
+                const matchesSearch = hackathon.title.toLowerCase().includes(searchTerm) ||
+                                    hackathon.organiser.toLowerCase().includes(searchTerm);
+                
+                const matchesStatus = !statusFilter || 
+                                    hackathon.status.toLowerCase().includes(statusFilter);
+                
+                const matchesPlatform = !platformFilter || 
+                                      hackathon.website.toLowerCase().includes(platformFilter);
+
+                return matchesSearch && matchesStatus && matchesPlatform;
+            });
+
+            displayHackathons(filteredHackathons);
+            updateHackathonCount();
+        }
+
+        function displayHackathons(hackathons) {
+            const hackathonList = document.getElementById('hackathon-list');
+            hackathonList.innerHTML = '';
+
+            if (hackathons.length === 0) {
+                hackathonList.innerHTML = '<div class="error-message">No hackathons match your filters. Try adjusting your search criteria.</div>';
+                return;
+            }
+
+            hackathons.forEach(hackathon => {
+                const listItem = document.createElement('li');
+                listItem.className = 'hackathon-card';
+                
+                const themes = Array.isArray(hackathon.theme) ? hackathon.theme.join(', ') : hackathon.theme || 'General';
+                const participants = hackathon.participants || 0;
+                const mode = hackathon.mode || 'Online';
+                const status = hackathon.status || 'Open';
+                
+                listItem.innerHTML = `
+                    <div class="card-header">
+                        <div>
+                            <h3 class="hackathon-title">${hackathon.title || 'Untitled Hackathon'}</h3>
+                        </div>
+                        <div class="platform-badge">
+                            <i class="${getPlatformIcon(hackathon.website)}"></i>
+                            ${hackathon.website || 'Platform'}
+                        </div>
+                    </div>
+                    
+                    <div class="card-content">
+                        <div class="organiser">
+                            <i class="fas fa-building"></i>
+                            <span>${hackathon.organiser || 'Unknown Organiser'}</span>
+                        </div>
+                        
+                        <div class="card-meta">
+                            <div class="meta-item">
+                                <i class="${getModeIcon(mode)}"></i>
+                                <span>${mode}</span>
+                            </div>
+                            <div class="meta-item">
+                                <i class="fas fa-calendar-alt"></i>
+                                <span>${formatDate(hackathon.startDate)}</span>
+                            </div>
+                            <div class="meta-item">
+                                <i class="fas fa-users"></i>
+                                <span>${participants.toLocaleString()} participants</span>
+                            </div>
+                            <div class="meta-item">
+                                <i class="fas fa-tag"></i>
+                                <span>${themes}</span>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <a href="${hackathon.link || '#'}" target="_blank" class="cta-button">
+                        <span>Join Hackathon</span>
+                        <i class="fas fa-external-link-alt"></i>
+                    </a>
+                `;
+                
+                hackathonList.appendChild(listItem);
+            });
+        }
+
+        // Fetch and display hackathons
+        fetch('http://localhost:8000/hackathons')
+            .then(response => response.json())
+            .then(hackathons => {
+                const loading = document.getElementById('loading');
+                
+                loading.style.display = 'none';
+                allHackathons = hackathons;
+                filteredHackathons = hackathons;
+                
+                if (hackathons.length === 0) {
+                    document.getElementById('hackathon-list').innerHTML = '<div class="error-message">No hackathons found. Check back later!</div>';
+                    return;
+                }
+                
+                displayHackathons(hackathons);
+                updateHackathonCount();
+            })
+            .catch(error => {
+                console.error('Error fetching hackathons:', error);
+                const loading = document.getElementById('loading');
+                
+                loading.style.display = 'none';
+                document.getElementById('hackathon-list').innerHTML = `
+                    <div class="error-message">
+                        <i class="fas fa-exclamation-triangle"></i>
+                        Failed to load hackathons. Please check your connection and try again.
+                    </div>
+                `;
+            });
+
+        // Event listeners for filtering
+        document.getElementById('searchBar').addEventListener('input', filterHackathons);
+        document.getElementById('statusFilter').addEventListener('change', filterHackathons);
+        document.getElementById('platformFilter').addEventListener('change', filterHackathons);
+        
+        document.getElementById('clearFilters').addEventListener('click', () => {
+            document.getElementById('searchBar').value = '';
+            document.getElementById('statusFilter').value = '';
+            document.getElementById('platformFilter').value = '';
+            filterHackathons();
+        });
 
         // Initialize particles
         createParticles();
