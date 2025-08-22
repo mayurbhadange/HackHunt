@@ -1,9 +1,10 @@
 # syntax=docker/dockerfile:1
 FROM node:20-slim
 
-# Install Chromium deps for Puppeteer
+# Install Chromium deps and Chromium for Puppeteer
 RUN apt-get update && apt-get install -y \
   ca-certificates \
+  chromium \
   fonts-liberation \
   libasound2 \
   libatk-bridge2.0-0 \
@@ -47,13 +48,11 @@ WORKDIR /app
 # Copy package files first for better caching
 COPY package*.json ./
 
-# Ensure Puppeteer downloads Chromium to a known path
-ENV PUPPETEER_CACHE_DIR=/app/.cache/puppeteer \
-    PUPPETEER_SKIP_CHROMIUM_DOWNLOAD=false \
-    PUPPETEER_PRODUCT=chrome \
-    NODE_ENV=production
+# Set production env
+ENV NODE_ENV=production
 
-RUN npm ci --omit=dev
+# Speed up install: skip Chromium download and disable audits/funding noise
+RUN PUPPETEER_SKIP_DOWNLOAD=true npm ci --omit=dev --no-audit --no-fund --prefer-offline
 
 # Copy app source
 COPY . .
