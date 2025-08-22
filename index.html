@@ -94,6 +94,151 @@
             padding: 2rem;
         }
 
+        .top-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 2rem;
+            padding: 1rem 0;
+            border-bottom: 1px solid rgba(124, 58, 237, 0.3);
+        }
+
+        .logo {
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 1.8rem;
+            font-weight: 700;
+            background: linear-gradient(135deg, #00d4ff 0%, #7c3aed 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        .social-links {
+            display: flex;
+            gap: 1rem;
+        }
+
+        .social-links a {
+            color: #8892b0;
+            font-size: 1.2rem;
+            transition: color 0.3s ease;
+            text-decoration: none;
+        }
+
+        .social-links a:hover {
+            color: #00d4ff;
+        }
+
+        .controls-section {
+            display: grid;
+            grid-template-columns: 2fr 1fr 1fr;
+            gap: 1rem;
+            margin-bottom: 2rem;
+            align-items: center;
+        }
+
+        .search-container {
+            position: relative;
+        }
+
+        .search-bar {
+            width: 100%;
+            padding: 0.75rem 1rem 0.75rem 2.5rem;
+            background: rgba(26, 26, 46, 0.8);
+            border: 1px solid #2d3748;
+            border-radius: 8px;
+            color: #e0e6ed;
+            font-size: 1rem;
+            transition: border-color 0.3s ease;
+        }
+
+        .search-bar:focus {
+            outline: none;
+            border-color: #00d4ff;
+            box-shadow: 0 0 0 2px rgba(0, 212, 255, 0.2);
+        }
+
+        .search-bar::placeholder {
+            color: #8892b0;
+        }
+
+        .search-icon {
+            position: absolute;
+            left: 0.75rem;
+            top: 50%;
+            transform: translateY(-50%);
+            color: #8892b0;
+            pointer-events: none;
+        }
+
+        .filter-group {
+            display: flex;
+            flex-direction: column;
+            gap: 0.5rem;
+        }
+
+        .filter-label {
+            font-size: 0.9rem;
+            color: #8892b0;
+            font-weight: 500;
+        }
+
+        .filter-select {
+            padding: 0.75rem;
+            background: rgba(26, 26, 46, 0.8);
+            border: 1px solid #2d3748;
+            border-radius: 8px;
+            color: #e0e6ed;
+            font-size: 0.9rem;
+            cursor: pointer;
+            transition: border-color 0.3s ease;
+        }
+
+        .filter-select:focus {
+            outline: none;
+            border-color: #7c3aed;
+            box-shadow: 0 0 0 2px rgba(124, 58, 237, 0.2);
+        }
+
+        .filter-select option {
+            background: #1a1a2e;
+            color: #e0e6ed;
+        }
+
+        .stats-section {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 2rem;
+            padding: 1rem;
+            background: rgba(26, 26, 46, 0.5);
+            border-radius: 8px;
+            border: 1px solid rgba(124, 58, 237, 0.3);
+        }
+
+        .hackathon-count {
+            font-family: 'JetBrains Mono', monospace;
+            color: #00d4ff;
+            font-weight: 600;
+        }
+
+        .clear-filters {
+            background: linear-gradient(135deg, #ff006e, #7c3aed);
+            color: white;
+            border: none;
+            padding: 0.5rem 1rem;
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 0.9rem;
+            transition: transform 0.2s ease;
+        }
+
+        .clear-filters:hover {
+            transform: translateY(-2px);
+        }
+
         .header {
             text-align: center;
             margin-bottom: 3rem;
@@ -358,6 +503,23 @@
         }
 
         @media (max-width: 768px) {
+            .top-header {
+                flex-direction: column;
+                gap: 1rem;
+                text-align: center;
+            }
+
+            .controls-section {
+                grid-template-columns: 1fr;
+                gap: 1rem;
+            }
+
+            .stats-section {
+                flex-direction: column;
+                gap: 1rem;
+                text-align: center;
+            }
+
             #hackathon-list {
                 grid-template-columns: repeat(2, 1fr);
                 gap: 16px;
@@ -427,6 +589,60 @@
     <div class="particles" id="particles"></div>
     
     <div class="container ">
+        <div class="top-header">
+            <div class="logo">HackHunt</div>
+            <div class="social-links">
+                <a href="https://github.com" target="_blank" title="GitHub">
+                    <i class="fab fa-github"></i>
+                </a>
+                <a href="https://linkedin.com" target="_blank" title="LinkedIn">
+                    <i class="fab fa-linkedin"></i>
+                </a>
+                <a href="https://twitter.com" target="_blank" title="Twitter">
+                    <i class="fab fa-twitter"></i>
+                </a>
+            </div>
+        </div>
+
+        <div class="controls-section">
+            <div class="search-container">
+                <i class="fas fa-search search-icon"></i>
+                <input type="text" class="search-bar" id="searchBar" placeholder="Search hackathons...">
+            </div>
+            
+            <div class="filter-group">
+                <label class="filter-label">Status</label>
+                <select class="filter-select" id="statusFilter">
+                    <option value="">All Status</option>
+                    <option value="upcoming">Upcoming</option>
+                    <option value="open">Open</option>
+                    <option value="live">Live</option>
+                </select>
+            </div>
+            
+            <div class="filter-group">
+                <label class="filter-label">Platform</label>
+                <select class="filter-select" id="platformFilter">
+                    <option value="">All Platforms</option>
+                    <option value="devfolio">Devfolio</option>
+                    <option value="devpost">Devpost</option>
+                    <option value="hack2skill">Hack2skill</option>
+                    <option value="unstop">Unstop</option>
+                    <option value="mlh">MLH</option>
+                    <option value="labai">LabAI</option>
+                </select>
+            </div>
+        </div>
+
+        <div class="stats-section">
+            <div class="hackathon-count" id="hackathonCount">
+                Loading hackathons...
+            </div>
+            <button class="clear-filters" id="clearFilters">
+                <i class="fas fa-times"></i> Clear Filters
+            </button>
+        </div>
+
         <div class="header">
             <h1>Hackhunt</h1>
             <p class="subtitle">Discover the latest hackathons and coding competitions</p>
@@ -492,88 +708,144 @@
             return modeIcons[mode] || modeIcons.Online;
         }
 
+        // Global variables for filtering
+        let allHackathons = [];
+        let filteredHackathons = [];
+
+        function updateHackathonCount() {
+            const countElement = document.getElementById('hackathonCount');
+            countElement.textContent = `${filteredHackathons.length} hackathons found`;
+        }
+
+        function filterHackathons() {
+            const searchTerm = document.getElementById('searchBar').value.toLowerCase();
+            const statusFilter = document.getElementById('statusFilter').value.toLowerCase();
+            const platformFilter = document.getElementById('platformFilter').value.toLowerCase();
+
+            filteredHackathons = allHackathons.filter(hackathon => {
+                const matchesSearch = hackathon.title.toLowerCase().includes(searchTerm) ||
+                                    hackathon.organiser.toLowerCase().includes(searchTerm);
+                
+                const matchesStatus = !statusFilter || 
+                                    hackathon.status.toLowerCase().includes(statusFilter);
+                
+                const matchesPlatform = !platformFilter || 
+                                      hackathon.website.toLowerCase().includes(platformFilter);
+
+                return matchesSearch && matchesStatus && matchesPlatform;
+            });
+
+            displayHackathons(filteredHackathons);
+            updateHackathonCount();
+        }
+
+        function displayHackathons(hackathons) {
+            const hackathonList = document.getElementById('hackathon-list');
+            hackathonList.innerHTML = '';
+
+            if (hackathons.length === 0) {
+                hackathonList.innerHTML = '<div class="error-message">No hackathons match your filters. Try adjusting your search criteria.</div>';
+                return;
+            }
+
+            hackathons.forEach(hackathon => {
+                const listItem = document.createElement('li');
+                listItem.className = 'hackathon-card';
+                
+                const themes = Array.isArray(hackathon.theme) ? hackathon.theme.join(', ') : hackathon.theme || 'General';
+                const participants = hackathon.participants || 0;
+                const mode = hackathon.mode || 'Online';
+                const status = hackathon.status || 'Open';
+                
+                listItem.innerHTML = `
+                    <div class="card-header">
+                        <div>
+                            <h3 class="hackathon-title">${hackathon.title || 'Untitled Hackathon'}</h3>
+                        </div>
+                        <div class="platform-badge">
+                            <i class="${getPlatformIcon(hackathon.website)}"></i>
+                            ${hackathon.website || 'Platform'}
+                        </div>
+                    </div>
+                    
+                    <div class="card-content">
+                        <div class="organiser">
+                            <i class="fas fa-building"></i>
+                            <span>${hackathon.organiser || 'Unknown Organiser'}</span>
+                        </div>
+                        
+                        <div class="card-meta">
+                            <div class="meta-item">
+                                <i class="${getModeIcon(mode)}"></i>
+                                <span>${mode}</span>
+                            </div>
+                            <div class="meta-item">
+                                <i class="fas fa-calendar-alt"></i>
+                                <span>${formatDate(hackathon.startDate)}</span>
+                            </div>
+                            <div class="meta-item">
+                                <i class="fas fa-users"></i>
+                                <span>${participants.toLocaleString()} participants</span>
+                            </div>
+                            <div class="meta-item">
+                                <i class="fas fa-tag"></i>
+                                <span>${themes}</span>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <a href="${hackathon.link || '#'}" target="_blank" class="cta-button">
+                        <span>Join Hackathon</span>
+                        <i class="fas fa-external-link-alt"></i>
+                    </a>
+                `;
+                
+                hackathonList.appendChild(listItem);
+            });
+        }
+
         // Fetch and display hackathons
         fetch('http://localhost:8000/hackathons')
             .then(response => response.json())
             .then(hackathons => {
                 const loading = document.getElementById('loading');
-                const hackathonList = document.getElementById('hackathon-list');
                 
                 loading.style.display = 'none';
+                allHackathons = hackathons;
+                filteredHackathons = hackathons;
                 
                 if (hackathons.length === 0) {
-                    hackathonList.innerHTML = '<div class="error-message">No hackathons found. Check back later!</div>';
+                    document.getElementById('hackathon-list').innerHTML = '<div class="error-message">No hackathons found. Check back later!</div>';
                     return;
                 }
                 
-                hackathons.forEach(hackathon => {
-                    const listItem = document.createElement('li');
-                    listItem.className = 'hackathon-card';
-                    
-                    const themes = Array.isArray(hackathon.theme) ? hackathon.theme.join(', ') : hackathon.theme || 'General';
-                    const participants = hackathon.participants || 0;
-                    const mode = hackathon.mode || 'Online';
-                    const status = hackathon.status || 'Open';
-                    
-                    listItem.innerHTML = `
-                        <div class="card-header">
-                            <div>
-                                <h3 class="hackathon-title">${hackathon.title || 'Untitled Hackathon'}</h3>
-                            </div>
-                            <div class="platform-badge">
-                                <i class="${getPlatformIcon(hackathon.website)}"></i>
-                                ${hackathon.website || 'Platform'}
-                            </div>
-                        </div>
-                        
-                        <div class="card-content">
-                            <div class="organiser">
-                                <i class="fas fa-building"></i>
-                                <span>${hackathon.organiser || 'Unknown Organiser'}</span>
-                            </div>
-                            
-                            <div class="card-meta">
-                                <div class="meta-item">
-                                    <i class="${getModeIcon(mode)}"></i>
-                                    <span>${mode}</span>
-                                </div>
-                                <div class="meta-item">
-                                    <i class="fas fa-calendar-alt"></i>
-                                    <span>${formatDate(hackathon.startDate)}</span>
-                                </div>
-                                <div class="meta-item">
-                                    <i class="fas fa-users"></i>
-                                    <span>${participants.toLocaleString()} participants</span>
-                                </div>
-                                <div class="meta-item">
-                                    <i class="fas fa-tag"></i>
-                                    <span>${themes}</span>
-                                </div>
-                            </div>
-                        </div>
-                        
-                        <a href="${hackathon.link || '#'}" target="_blank" class="cta-button">
-                            <span>Join Hackathon</span>
-                            <i class="fas fa-external-link-alt"></i>
-                        </a>
-                    `;
-                    
-                    hackathonList.appendChild(listItem);
-                });
+                displayHackathons(hackathons);
+                updateHackathonCount();
             })
             .catch(error => {
                 console.error('Error fetching hackathons:', error);
                 const loading = document.getElementById('loading');
-                const hackathonList = document.getElementById('hackathon-list');
                 
                 loading.style.display = 'none';
-                hackathonList.innerHTML = `
+                document.getElementById('hackathon-list').innerHTML = `
                     <div class="error-message">
                         <i class="fas fa-exclamation-triangle"></i>
                         Failed to load hackathons. Please check your connection and try again.
                     </div>
                 `;
             });
+
+        // Event listeners for filtering
+        document.getElementById('searchBar').addEventListener('input', filterHackathons);
+        document.getElementById('statusFilter').addEventListener('change', filterHackathons);
+        document.getElementById('platformFilter').addEventListener('change', filterHackathons);
+        
+        document.getElementById('clearFilters').addEventListener('click', () => {
+            document.getElementById('searchBar').value = '';
+            document.getElementById('statusFilter').value = '';
+            document.getElementById('platformFilter').value = '';
+            filterHackathons();
+        });
 
         // Initialize particles
         createParticles();
