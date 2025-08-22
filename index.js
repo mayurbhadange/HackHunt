@@ -505,7 +505,7 @@ async function main() {
       { name: 'Devpost', fn: fetchDevpost },
       { name: 'Hackskill', fn: fetchHackskill },
       { name: 'Unstop', fn: fetchUnstop },
-      { name: 'MLH', fn: fetchMLH }
+      ...(process.env.ENABLE_MLH === 'true' ? [{ name: 'MLH', fn: fetchMLH }] : [])
       // { name: 'LabAI', fn: fetchLabAi }
     ];
 
@@ -723,6 +723,7 @@ app.get("/testdb", async (req, res) => {
   }
 });
 
-app.listen(8000, () => {
-  console.log("Server is running on port 8000");
+const PORT = process.env.PORT || 8000;
+app.listen(PORT, () => {
+  console.log(`Server is running on port ${PORT}`);
 });   

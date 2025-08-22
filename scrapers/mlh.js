@@ -7,8 +7,15 @@ export async function mlh() {
   try {
     browser = await puppeteer.launch({
       headless: "new",
-    //   executablePath: path,
-      args: ["--no-sandbox", "--disable-setuid-sandbox"],
+      args: [
+        "--no-sandbox",
+        "--disable-setuid-sandbox",
+        "--disable-dev-shm-usage",
+        "--disable-gpu",
+        "--disable-software-rasterizer",
+        "--no-zygote",
+        "--single-process"
+      ]
     });
 
     const page = await browser.newPage();
