@@ -1,0 +1,59 @@
+.grid-container {
+  display: grid;
+  gap: 20px;
+  padding: 20px;
+}
+
+/* Desktop styles (3 columns) */
+.grid-container {
+  grid-template-columns: repeat(3, 1fr);
+}
+
+/* Tablet styles (2 columns) */
+@media (max-width: 768px) {
+  .grid-container {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+/* Mobile styles (1 column) */
+@media (max-width: 480px) {
+  .grid-container {
+    grid-template-columns: 1fr;
+  }
+}
+
+.card {
+  background-color: #f4f4f4;
+  border-radius: 8px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  padding: 20px;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  align-items: stretch;
+  height: 100%; /* Ensure all cards have the same height */
+}
+
+.card > *:not(:last-child) {
+    margin-bottom: 10px; /* Adds spacing between card elements */
+}
+
+.card-title {
+  font-size: 1.2em;
+  font-weight: bold;
+}
+
+.card-details {
+  font-size: 1em;
+}
+
+.status-button {
+  background-color: #007bff;
+  color: white;
+  border: none;
+  padding: 10px 20px;
+  border-radius: 5px;
+  cursor: pointer;
+  text-align: center;
+}

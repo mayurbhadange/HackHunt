@@ -11,6 +11,7 @@ import dotenv from "dotenv";
 import express from "express";
 import path from 'path';
 import { fileURLToPath } from 'url';
+import { timeStamp } from "console";
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
@@ -20,10 +21,31 @@ dotenv.config();
 const app = express();
 app.use(express.json());
 
-mongoose.connect(process.env.MONGO_DB_URI, {
-  useNewUrlParser: true,
-  useUnifiedTopology: true,
+const connectDB = async () => {
+  try {
+    await mongoose.connect(process.env.MONGO_DB_URI, {
+      useNewUrlParser: true,
+      useUnifiedTopology: true,
+    });
+    console.log('MongoDB connected successfully');
+  } catch (error) {
+    console.error('MongoDB connection error:', error);
+    process.exit(1);
+  }
+};
+
+await connectDB();
+
+// Wait for connection to be ready
+await new Promise((resolve) => {
+  if (mongoose.connection.readyState === 1) {
+    resolve();
+  } else {
+    mongoose.connection.once('open', resolve);
+  }
 });
+
+console.log('Database connection established, starting operations...');
 
 const hackathonSchema = new mongoose.Schema({
   title: String,
@@ -37,7 +59,8 @@ const hackathonSchema = new mongoose.Schema({
   participants: Number,
   organiser: String,
   website: String,
-});
+  }, {timestamps: true}
+);
 
 const Hackathon =
   mongoose.models.Hackathon || mongoose.model("Hackathon", hackathonSchema);
@@ -62,31 +85,40 @@ export const Update =
 
 async function fetchDevfolio() {
   try {
+    console.log('Starting Devfolio fetch...');
     const hackathons = await devfolio();
-    // console.log(hackathons);
-    hackathons.forEach(async (hackathon) => {
-      await Hackathon.updateOne(
-        {
-          title: hackathon.title,
-          startDate: hackathon.date,
-          link: hackathon.link,
-        }, // Filter criteria
-        {
-          $setOnInsert: {
-            theme: [hackathon.theme],
-            stringDate: hackathon.date,
-            status: hackathon.status || "Unspecified",
-            mode: hackathon.mode || "Unspecified",
-            location: hackathon.location || "Unspecified",
+    console.log(`Found ${hackathons.length} hackathons from Devfolio`);
+    
+    // Use Promise.all to handle all updates concurrently
+    await Promise.all(hackathons.map(async (hackathon) => {
+      try {
+        await Hackathon.updateOne(
+          {
+            title: hackathon.title,
+            startDate: hackathon.date,
             link: hackathon.link,
-            participants: hackathon.participants || 0,
-            organiser: "Devfolio",
-            website: "Devfolio",
           },
-        },
-        { upsert: true } // Insert if it doesn't exist
-      );
-    });
+          {
+            $setOnInsert: {
+              theme: [hackathon.theme],
+              stringDate: hackathon.date,
+              status: hackathon.status || "Unspecified",
+              mode: hackathon.mode || "Unspecified",
+              location: hackathon.location || "Unspecified",
+              link: hackathon.link,
+              participants: hackathon.participants || 0,
+              organiser: "Devfolio",
+              website: "Devfolio",
+            },
+          },
+          { upsert: true }
+        );
+      } catch (updateError) {
+        console.error(`Error updating Devfolio hackathon ${hackathon.title}:`, updateError.message);
+      }
+    }));
+    
+    console.log('Completed Devfolio updates');
     // hackathons.forEach((hackathon) => {
     //   const newHackathon = new Hackathon({
     //     title: hackathon.title,
@@ -465,29 +497,54 @@ const delay = (delayInms) => {
 };
 
 async function main() {
-  console.log("Fetching Devfolio...");
-  await fetchDevfolio();
-  await delay(3000);
+  try {
+    console.log("Starting hackathon data collection...");
+    
+    const fetchFunctions = [
+      { name: 'Devfolio', fn: fetchDevfolio },
+      { name: 'Devpost', fn: fetchDevpost },
+      { name: 'Hackskill', fn: fetchHackskill },
+      { name: 'Unstop', fn: fetchUnstop },
+      { name: 'MLH', fn: fetchMLH }
+      // { name: 'LabAI', fn: fetchLabAi }
+    ];
 
-  console.log("Fetching Devpost...");
-  await fetchDevpost();
-  await delay(3000);
+    for (const { name, fn } of fetchFunctions) {
+      try {
+        console.log(`Fetching ${name}...`);
+        await fn();
+        await delay(2000); // Reduced delay since we have better error handling
+        console.log(`Completed ${name} fetch.`);
+      } catch (error) {
+        console.error(`Error during ${name} fetch:`, error);
+        // Continue with next fetch even if one fails
+      }
+    }
 
-  console.log("Fetching Hackskill...");
-  await fetchHackskill();
-  await delay(3000);
-
-  console.log("Fetching Unstop...");
-  await fetchUnstop();
-  await delay(3000);
-
-  console.log("Fetching MLH...");
-  await fetchMLH();
-  await delay(3000);
-
-  console.log("Fetching LabAI...");
-  // await fetchLabAi();
-  await delay(3000);
+    console.log("All data collection completed.");
+    
+    // Clean up duplicates
+    console.log("Removing duplicates...");
+    await removeduplicatesbytitle();
+    await removeduplicatesbylink();
+    
+    // Update timestamp
+    console.log("Updating timestamp...");
+    const oldupdate = await Update.findOne();
+    await Update.findOneAndUpdate(
+      oldupdate ? { _id: oldupdate._id } : {},
+      { 
+        lastUpdate: Date.now(),
+        version: oldupdate ? oldupdate.version + 1 : 1 
+      },
+      { upsert: true }
+    );
+    
+    console.log("Process completed successfully!");
+  } catch (error) {
+    console.error("Critical error in main process:", error);
+    throw error; // Re-throw to be caught by the top-level error handler
+  }
 }
 
 // console.log("Running the scraper...");
@@ -591,35 +648,23 @@ const removeduplicatesbylink = async () => {
 
 // console.log("HELLO FROM INDEX.JS");
 cron.schedule("0 */6 * * *", async () => {
-  console.log("Running the scraper...");
-  await main();
-  
-  console.log("Scrapping Done!");
-  const oldupdate = await Update.findOne();
-  console.log(oldupdate);
-  // const newupdate = Update.create({ lastUpdated: new Date(), version: 1 });
-  await Update.findByIdAndUpdate(
-    oldupdate._id,
-    { lastUpdate: Date.now(), version: oldupdate.version + 1 },
-    { upsert: true }
-  );
-  await removeduplicatesbytitle();
-  await removeduplicatesbylink();
+  try {
+    console.log("Starting scheduled scraper run...");
+    await main();
+    console.log("Scheduled scraper run completed successfully!");
+  } catch (error) {
+    console.error("Error in scheduled scraper run:", error);
+  }
 });
 
-await main();
-// // await fetchMLH()
-// console.log("Scrapping Done!");
-// const oldupdate = await Update.findOne();
-// console.log(oldupdate);
-// // const newupdate = Update.create({ lastUpdated: new Date(), version: 1 });
-// await Update.findByIdAndUpdate(
-//   oldupdate._id,
-//   { lastUpdate: Date.now(), version: oldupdate.version + 1 },
-//   { upsert: true }
-// );
-// await removeduplicatesbytitle();
-// await removeduplicatesbylink();
+try {
+  console.log("Starting initial scraper run...");
+  await main();
+  console.log("Initial scraper run completed successfully!");
+} catch (error) {
+  console.error("Error in initial scraper run:", error);
+  // Don't exit here as we want the server to start even if initial scrape fails
+}
 
 app.get("/", (req, res) => {
   res.sendFile(path.join(__dirname, 'index.html'));
@@ -668,4 +713,4 @@ app.get("/testdb", async (req, res) => {
 
 app.listen(8000, () => {
   console.log("Server is running on port 8000");
-});
+});   
