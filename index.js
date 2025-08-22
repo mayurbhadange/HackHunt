@@ -648,23 +648,35 @@ const removeduplicatesbylink = async () => {
 
 // console.log("HELLO FROM INDEX.JS");
 cron.schedule("0 */6 * * *", async () => {
-  try {
-    console.log("Starting scheduled scraper run...");
-    await main();
-    console.log("Scheduled scraper run completed successfully!");
-  } catch (error) {
-    console.error("Error in scheduled scraper run:", error);
-  }
+  console.log("Running the scraper...");
+  await main();
+  
+  console.log("Scrapping Done!");
+  const oldupdate = await Update.findOne();
+  console.log(oldupdate);
+  // const newupdate = Update.create({ lastUpdated: new Date(), version: 1 });
+  await Update.findByIdAndUpdate(
+    oldupdate._id,
+    { lastUpdate: Date.now(), version: oldupdate.version + 1 },
+    { upsert: true }
+  );
+  await removeduplicatesbytitle();
+  await removeduplicatesbylink();
 });
 
-try {
-  console.log("Starting initial scraper run...");
-  await main();
-  console.log("Initial scraper run completed successfully!");
-} catch (error) {
-  console.error("Error in initial scraper run:", error);
-  // Don't exit here as we want the server to start even if initial scrape fails
-}
+await main();
+// // await fetchMLH()
+// console.log("Scrapping Done!");
+// const oldupdate = await Update.findOne();
+// console.log(oldupdate);
+// // const newupdate = Update.create({ lastUpdated: new Date(), version: 1 });
+// await Update.findByIdAndUpdate(
+//   oldupdate._id,
+//   { lastUpdate: Date.now(), version: oldupdate.version + 1 },
+//   { upsert: true }
+// );
+// await removeduplicatesbytitle();
+// await removeduplicatesbylink();
 
 app.get("/", (req, res) => {
   res.sendFile(path.join(__dirname, 'index.html'));
