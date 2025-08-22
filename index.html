@@ -164,186 +164,152 @@
         #hackathon-list {
             display: grid;
             grid-template-columns: repeat(3, 1fr);
-            gap: 20px;
+            gap: 24px;
             list-style: none;
             padding: 0;
             margin: 0;
+            max-width: 1400px;
+            margin: 0 auto;
         }
 
         .hackathon-card {
-            background: rgba(26, 26, 46, 0.8);
-            border: 1px solid #2d3748;
-            border-radius: 12px;
-            padding: 20px;
+            background: rgba(30, 35, 50, 0.95);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 16px;
+            padding: 24px;
             position: relative;
             overflow: hidden;
-            transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+            transition: all 0.3s ease;
             backdrop-filter: blur(10px);
             display: flex;
             flex-direction: column;
-            height: 100%;
-            min-height: 350px;
-            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
-        }
-
-        .hackathon-card::before {
-            content: '';
-            position: absolute;
-            top: 0;
-            left: 0;
-            right: 0;
-            bottom: 0;
-            background: linear-gradient(135deg, transparent 0%, rgba(0, 212, 255, 0.1) 50%, transparent 100%);
-            opacity: 0;
-            transition: opacity 0.4s ease;
-            pointer-events: none;
-        }
-
-        .hackathon-card::after {
-            content: '';
-            position: absolute;
-            top: -2px;
-            left: -2px;
-            right: -2px;
-            bottom: -2px;
-            background: linear-gradient(45deg, #00d4ff, #7c3aed, #ff006e, #00d4ff);
-            border-radius: 18px;
-            opacity: 0;
-            z-index: -1;
-            transition: opacity 0.4s ease;
-            animation: borderRotate 3s linear infinite;
-        }
-
-        @keyframes borderRotate {
-            0% { transform: rotate(0deg); }
-            100% { transform: rotate(360deg); }
+            justify-content: space-between;
+            min-height: 320px;
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.4);
         }
 
         .hackathon-card:hover {
-            transform: translateY(-8px) scale(1.02);
-            box-shadow: 0 20px 40px rgba(0, 212, 255, 0.2);
-        }
-
-        .hackathon-card:hover::before {
-            opacity: 1;
-        }
-
-        .hackathon-card:hover::after {
-            opacity: 1;
+            transform: translateY(-4px);
+            box-shadow: 0 12px 48px rgba(0, 212, 255, 0.15);
+            border-color: rgba(0, 212, 255, 0.3);
         }
 
         .card-header {
             display: flex;
             justify-content: space-between;
             align-items: flex-start;
-            margin-bottom: 16px;
-            flex-shrink: 0;
+            margin-bottom: 20px;
         }
 
         .hackathon-title {
-            font-family: 'JetBrains Mono', monospace;
-            font-size: 1.2rem;
-            font-weight: 600;
+            font-family: 'Inter', sans-serif;
+            font-size: 1.25rem;
+            font-weight: 700;
             color: #ffffff;
-            margin-bottom: 8px;
+            margin: 0;
             line-height: 1.3;
+            flex: 1;
+            margin-right: 12px;
         }
 
         .platform-badge {
-            background: linear-gradient(135deg, #00d4ff, #7c3aed);
+            background: #00d4ff;
             color: #ffffff;
-            padding: 0.3rem 0.8rem;
-            border-radius: 20px;
-            font-size: 0.8rem;
+            padding: 6px 12px;
+            border-radius: 12px;
+            font-size: 0.75rem;
             font-weight: 600;
             text-transform: uppercase;
-            letter-spacing: 1px;
+            letter-spacing: 0.5px;
             display: flex;
             align-items: center;
-            gap: 0.5rem;
+            gap: 6px;
+            flex-shrink: 0;
         }
 
         .card-content {
-            flex: 1;
             display: flex;
             flex-direction: column;
-            margin-bottom: 16px;
+            gap: 16px;
+            flex: 1;
         }
 
         .organiser {
-            color: #8892b0;
-            font-size: 1rem;
-            margin-bottom: 12px;
+            color: #00d4ff;
+            font-size: 0.95rem;
+            font-weight: 500;
             display: flex;
             align-items: center;
-            gap: 0.5rem;
-        }
-
-        .organiser i {
-            color: #00d4ff;
+            gap: 8px;
         }
 
         .card-meta {
             display: flex;
-            gap: 1rem;
-            margin-bottom: 16px;
-            flex-wrap: wrap;
-            margin-top: auto;
+            flex-direction: column;
+            gap: 12px;
+        }
+
+        .meta-row {
+            display: flex;
+            align-items: center;
+            gap: 16px;
         }
 
         .meta-item {
             display: flex;
             align-items: center;
-            gap: 0.5rem;
-            color: #8892b0;
-            font-size: 0.9rem;
+            gap: 8px;
+            color: #a0a9c0;
+            font-size: 0.875rem;
+            font-weight: 400;
         }
 
         .meta-item i {
             color: #7c3aed;
-            width: 16px;
+            width: 14px;
+            font-size: 0.875rem;
+        }
+
+        .themes {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 8px;
+            margin-top: 4px;
+        }
+
+        .theme-tag {
+            background: rgba(124, 58, 237, 0.2);
+            color: #a78bfa;
+            padding: 4px 8px;
+            border-radius: 6px;
+            font-size: 0.75rem;
+            font-weight: 500;
         }
 
         .cta-button {
-            background: linear-gradient(135deg, #00d4ff 0%, #7c3aed 100%);
+            background: linear-gradient(135deg, #00d4ff, #7c3aed);
             color: #ffffff;
             text-decoration: none;
-            padding: 12px 24px;
-            border-radius: 8px;
-            font-weight: 600;
-            font-size: 0.95rem;
+            padding: 14px 24px;
+            border-radius: 12px;
+            font-weight: 700;
+            font-size: 0.875rem;
             text-transform: uppercase;
-            letter-spacing: 1px;
+            letter-spacing: 0.5px;
             display: inline-flex;
             align-items: center;
             justify-content: center;
-            gap: 0.5rem;
+            gap: 8px;
             transition: all 0.3s ease;
-            position: relative;
-            overflow: hidden;
             margin-top: auto;
-            flex-shrink: 0;
             text-align: center;
-        }
-
-        .cta-button::before {
-            content: '';
-            position: absolute;
-            top: 0;
-            left: -100%;
-            width: 100%;
-            height: 100%;
-            background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
-            transition: left 0.5s ease;
+            border: none;
+            cursor: pointer;
         }
 
         .cta-button:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 10px 25px rgba(0, 212, 255, 0.3);
-        }
-
-        .cta-button:hover::before {
-            left: 100%;
+            transform: translateY(-1px);
+            box-shadow: 0 8px 24px rgba(0, 212, 255, 0.4);
         }
 
         .error-message {
@@ -360,7 +326,7 @@
         @media (max-width: 768px) {
             #hackathon-list {
                 grid-template-columns: repeat(2, 1fr);
-                gap: 16px;
+                gap: 20px;
             }
             
             .container {
@@ -372,7 +338,7 @@
             }
 
             .hackathon-card {
-                padding: 16px;
+                padding: 20px;
                 min-height: 320px;
             }
 
@@ -381,9 +347,8 @@
                 gap: 12px;
             }
 
-            .card-meta {
-                flex-direction: column;
-                gap: 8px;
+            .hackathon-title {
+                font-size: 1.1rem;
             }
         }
 
@@ -391,10 +356,6 @@
             #hackathon-list {
                 grid-template-columns: 1fr;
                 gap: 16px;
-            }
-            
-            .hackathon-card {
-                min-height: 300px;
             }
         }
 
@@ -517,9 +478,7 @@
                     
                     listItem.innerHTML = `
                         <div class="card-header">
-                            <div>
-                                <h3 class="hackathon-title">${hackathon.title || 'Untitled Hackathon'}</h3>
-                            </div>
+                            <h3 class="hackathon-title">${hackathon.title || 'Untitled Hackathon'}</h3>
                             <div class="platform-badge">
                                 <i class="${getPlatformIcon(hackathon.website)}"></i>
                                 ${hackathon.website || 'Platform'}
@@ -533,21 +492,24 @@
                             </div>
                             
                             <div class="card-meta">
-                                <div class="meta-item">
-                                    <i class="${getModeIcon(mode)}"></i>
-                                    <span>${mode}</span>
+                                <div class="meta-row">
+                                    <div class="meta-item">
+                                        <i class="${getModeIcon(mode)}"></i>
+                                        <span>${mode}</span>
+                                    </div>
+                                    <div class="meta-item">
+                                        <i class="fas fa-calendar-alt"></i>
+                                        <span>${formatDate(hackathon.startDate)}</span>
+                                    </div>
                                 </div>
-                                <div class="meta-item">
-                                    <i class="fas fa-calendar-alt"></i>
-                                    <span>${formatDate(hackathon.startDate)}</span>
+                                <div class="meta-row">
+                                    <div class="meta-item">
+                                        <i class="fas fa-users"></i>
+                                        <span>${participants.toLocaleString()} participants</span>
+                                    </div>
                                 </div>
-                                <div class="meta-item">
-                                    <i class="fas fa-users"></i>
-                                    <span>${participants.toLocaleString()} participants</span>
-                                </div>
-                                <div class="meta-item">
-                                    <i class="fas fa-tag"></i>
-                                    <span>${themes}</span>
+                                <div class="themes">
+                                    ${themes.split(', ').map(theme => `<span class="theme-tag">${theme}</span>`).join('')}
                                 </div>
                             </div>
                         </div>
