@@ -805,7 +805,7 @@
         }
 
         // Fetch and display hackathons
-        fetch('http://localhost:8000/hackathons')
+        fetch('/hackathons')
             .then(response => response.json())
             .then(hackathons => {
                 const loading = document.getElementById('loading');

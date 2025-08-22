@@ -18,6 +18,11 @@ const __dirname = path.dirname(__filename);
 
 dotenv.config();
 
+// Basic env var precheck to aid debugging in hosted environments
+if (!process.env.MONGO_DB_URI) {
+  console.error("MONGO_DB_URI is not set. Please configure your Mongo connection string.");
+}
+
 const app = express();
 app.use(express.json());
 
@@ -608,6 +613,29 @@ await main();
 
 app.get("/", (req, res) => {
   res.sendFile(path.join(__dirname, 'index.html'));
+});
+
+// Health endpoint to check DB and data availability
+app.get("/health", async (req, res) => {
+  try {
+    const readyState = mongoose.connection.readyState;
+    const hackathonCount = await Hackathon.estimatedDocumentCount();
+    res.json({ dbReadyState: readyState, hackathonCount });
+  } catch (e) {
+    res.status(500).json({ error: e.message });
+  }
+});
+
+// Manual trigger to run the scraper on-demand
+app.get("/trigger-scrape", async (req, res) => {
+  try {
+    await main();
+    const count = await Hackathon.estimatedDocumentCount();
+    res.json({ status: "ok", hackathonCount: count });
+  } catch (e) {
+    console.error("/trigger-scrape failed:", e);
+    res.status(500).json({ error: e.message });
+  }
 });
 
 app.get("/hackathons", async (req, res) => {
